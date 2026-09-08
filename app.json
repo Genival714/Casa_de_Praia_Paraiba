@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Casa de Praia · Praia do Amor",
+    "slug": "casa-praia-jacuma",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "casapraia",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0E6F7E"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0E6F7E",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static",
+      "name": "Casa de Praia · Praia do Amor · Jacumã/Conde-PB",
+      "shortName": "Casa de Praia",
+      "lang": "pt-BR",
+      "themeColor": "#0E6F7E",
+      "backgroundColor": "#FDF8F0",
+      "description": "Casa de temporada mobiliada na Praia do Amor, Jacuma - Conde/PB. Piscina, area de lazer e as melhores praias, mirantes e restaurantes do Litoral Sul paraibano."
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
