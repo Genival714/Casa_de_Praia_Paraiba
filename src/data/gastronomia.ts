@@ -1,3 +1,4 @@
+import { casa } from '@/data/casa';
 import type { Destino } from '@/lib/links';
 
 export type Categoria = 'frutos-do-mar' | 'regional' | 'carnes' | 'padaria' | 'bar';
@@ -13,6 +14,11 @@ export type Sabor = Destino & {
   /** Pratos que o anfitrião recomenda pedir. */
   pratos: string[];
   telefone?: string;
+  /**
+   * Texto que já vai escrito quando o hóspede toca no botão do WhatsApp.
+   * Sem ele, o cartão manda uma apresentação genérica.
+   */
+  mensagemWhatsApp?: string;
   /** Destaque pessoal do anfitrião — ganha selo no cartão. */
   favoritoDoAnfitriao?: boolean;
 };
@@ -25,6 +31,9 @@ export const categorias: { id: Categoria | 'todos'; rotulo: string }[] = [
   { id: 'padaria', rotulo: 'Padaria' },
   { id: 'bar', rotulo: 'Bar de praia' },
 ];
+
+/** Quem indica os lugares — o dono da casa, sempre o primeiro da lista. */
+const anfitriao = casa.anfitrioes[0].nome;
 
 export const sabores: Sabor[] = [
   {
@@ -80,6 +89,10 @@ export const sabores: Sabor[] = [
     minutosDeCarro: 55,
     pratos: ['Filé de robalo', 'Filé de badejo'],
     telefone: '83 99647-0428',
+    mensagemWhatsApp:
+      `Olá! Vim por indicação do ${anfitriao}, da Casa de Praia da Praia do Amor. ` +
+      'Gostaria de saber quais opções de refeições vocês preparam para comer aí no restaurante. ' +
+      'Agradeço desde já!',
     favoritoDoAnfitriao: true,
     buscaMapa: 'Restaurante Irmao Neno, Pontinha, Acau, Pitimbu - PB',
   },

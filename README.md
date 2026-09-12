@@ -181,10 +181,21 @@ de editar qualquer um deles, rode `npm run export` e publique de novo.
 | Praias, ranking, tempos de carro                 | `src/data/praias.ts`          |
 | Mirantes e passeios                              | `src/data/passeios.ts`        |
 | Restaurantes e bares                             | `src/data/gastronomia.ts`     |
+| Regras da casa, lotação, silêncio, leis          | `src/data/regras.ts`          |
+| Manual do poço: passos, avisos, tabela           | `src/data/poco.ts`            |
 | Fotos da casa                                    | `public/fotos/` (veja o LEIA-ME de lá) |
 | Vídeos da casa                                   | `public/videos/` (veja o LEIA-ME de lá) |
 | Fotos das praias e passeios                      | `public/fotos/lugares/` (opcional)     |
+| Imagem que aparece ao mandar o link no WhatsApp  | `public/og/capa.jpg` (1200×630) |
 | Cores do site                                    | `src/theme.ts`                |
+
+> **Atenção com as duas páginas de hóspede.** `regras.ts` reproduz o Anexo II
+> do contrato de locação e `poco.ts` reproduz o manual impresso da bomba. São
+> documentos operacionais e contratuais: ao mudar um texto aqui, mude também no
+> papel, para que os dois nunca digam coisas diferentes.
+>
+> Os telefones não ficam em nenhum dos dois — as duas páginas leem de
+> `src/data/casa.ts`, como o resto do site.
 
 ### Mudar a ordem do ranking das praias
 
@@ -214,11 +225,14 @@ O mesmo vale para qualquer praia, mirante ou restaurante.
 
 ```
 app/                      as telas (cada arquivo vira um endereço do site)
-  (tabs)/index.tsx        Início
-  (tabs)/casa.tsx         A Casa
-  (tabs)/praias.tsx       Praias
-  (tabs)/passeios.tsx     Passeios e mirantes
-  (tabs)/sabores.tsx      Gastronomia
+  index.tsx               Início
+  casa.tsx                A Casa
+  praias.tsx              Praias
+  passeios.tsx            Passeios e mirantes
+  sabores.tsx             Gastronomia
+  regras.tsx              Regras da Casa      (para quem já está hospedado)
+  poco.tsx                Manual do poço      (para quem já está hospedado)
+  _layout.tsx             a moldura: cabeçalho, página e botão do WhatsApp
   +html.tsx               a casca da página (fontes, título, compartilhamento)
 
 src/
@@ -259,4 +273,8 @@ scripts/gerar-qrcode.mjs  o gerador da placa de parede
   ferramenta de "subset" de fonte.
 - **Restaurantes** — só o Irmão Neno tem telefone cadastrado. Se tiver o
   contato dos outros, é só acrescentar o campo `telefone` em
-  `src/data/gastronomia.ts` que o botão de WhatsApp aparece sozinho.
+  `src/data/gastronomia.ts` que o botão de WhatsApp aparece sozinho. O
+  campo `mensagemWhatsApp`, no mesmo lugar, é o texto que já vai escrito
+  na conversa (o do Irmão Neno diz que o hóspede vem por indicação sua e
+  pergunta as opções de refeição para comer lá); sem ele vale uma
+  apresentação genérica.

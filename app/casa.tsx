@@ -1,18 +1,20 @@
 import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
-import { Botao, Cartao, Conteudo, TituloSecao } from '@/components/Base';
+import { Botao, Cartao, CartaoDeAtalho, Conteudo, TituloSecao } from '@/components/Base';
 import { BotoesDeRota } from '@/components/BotoesDeRota';
+import { CabecalhoDaPagina } from '@/components/CabecalhoDaPagina';
 import { CabecalhoDeTela } from '@/components/CabecalhoDeTela';
 import { BlocoContato } from '@/components/Contato';
-import { Foto } from '@/components/Foto';
+import { Galeria } from '@/components/Galeria';
 import { Icone } from '@/components/Icone';
 import { Seletor } from '@/components/Seletor';
 import { Videos } from '@/components/Videos';
 import { casa, comodidades, galeria, type Foto as TipoFoto } from '@/data/casa';
 import { ICONES_COMODIDADE } from '@/lib/icones';
 import { abrirLink, urlWhatsApp } from '@/lib/links';
-import { colors, espaco, fonts, raio } from '@/theme';
+import { colors, espaco, ESPACO_FINAL_DA_PAGINA, fonts, raio } from '@/theme';
 
 type FiltroFoto = TipoFoto['categoria'] | 'todas';
 
@@ -25,6 +27,7 @@ const FILTROS: { id: FiltroFoto; rotulo: string }[] = [
 ];
 
 export default function TelaCasa() {
+  const router = useRouter();
   const [filtro, setFiltro] = useState<FiltroFoto>('todas');
 
   const fotos = useMemo(
@@ -38,6 +41,11 @@ export default function TelaCasa() {
       contentContainerStyle={estilos.conteudo}
       showsVerticalScrollIndicator={false}
     >
+      <CabecalhoDaPagina
+        titulo="A casa por dentro · Casa de Praia na Praia do Amor"
+        descricao="Fotos, vídeos e estrutura da casa: piscina, área gourmet, 2 quartos e tudo mobiliado. Veja como chegar à Praia do Amor, em Jacumã — Conde/PB."
+        rota="/casa"
+      />
       <CabecalhoDeTela
         sobrancelha="O imóvel"
         titulo="A casa por dentro"
@@ -52,9 +60,8 @@ export default function TelaCasa() {
       </View>
 
       <Conteudo style={estilos.galeria}>
-        {fotos.map((foto) => (
-          <Foto key={foto.arquivo} arquivo={foto.arquivo} legenda={foto.legenda} altura={240} />
-        ))}
+        {/* A chave força a galeria a recomeçar quando o filtro muda. */}
+        <Galeria key={filtro} fotos={fotos} />
       </Conteudo>
 
       {/* ---------------------------------------------------------------
@@ -149,17 +156,50 @@ export default function TelaCasa() {
         <TituloSecao sobrancelha="Reservas" titulo="Fale com a gente" />
         <BlocoContato />
       </Conteudo>
+
+      {/* ---------------------------------------------------------------
+          Manual da casa — para quem já está hospedado.
+      --------------------------------------------------------------- */}
+      <Conteudo style={estilos.secao}>
+        <TituloSecao
+          sobrancelha="Já está hospedado?"
+          titulo="Manual da casa"
+          apoio="As regras da casa e como funciona o poço artesiano."
+        />
+
+        <View style={estilos.atalhos}>
+          <CartaoDeAtalho
+            icone="clipboard-text-outline"
+            titulo="Regras da casa"
+            texto="Lotação, silêncio, piscina e churrasqueira"
+            tom="falesia"
+            atraso={1}
+            onPress={() => router.push('/regras')}
+          />
+          <CartaoDeAtalho
+            icone="water-pump"
+            titulo="Poço artesiano"
+            texto="Como ligar a bomba e o que fazer se faltar água"
+            tom="falesia"
+            atraso={2}
+            onPress={() => router.push('/poco')}
+          />
+        </View>
+      </Conteudo>
     </ScrollView>
   );
 }
 
 const estilos = StyleSheet.create({
+  atalhos: {
+    gap: espaco.md,
+  },
   tela: {
     flex: 1,
     backgroundColor: colors.areia,
   },
   conteudo: {
-    paddingBottom: 130,
+    paddingBottom: ESPACO_FINAL_DA_PAGINA,
   },
   filtro: {
     marginTop: espaco.xl,
@@ -226,7 +266,7 @@ const estilos = StyleSheet.create({
     marginTop: 3,
   },
   chamada: {
-    backgroundColor: '#FFF3EE',
+    backgroundColor: colors.avisoFundo,
     borderRadius: raio.lg,
     padding: espaco.xl,
     gap: espaco.md,
@@ -236,13 +276,13 @@ const estilos = StyleSheet.create({
     fontSize: 22,
     lineHeight: 28,
     fontWeight: '600',
-    color: '#7B3A22',
+    color: colors.avisoTexto,
   },
   chamadaTexto: {
     fontFamily: fonts.corpo,
     fontSize: 14.5,
     lineHeight: 22,
-    color: '#8B4A2E',
+    color: colors.avisoTexto,
     marginBottom: espaco.xs,
   },
 });

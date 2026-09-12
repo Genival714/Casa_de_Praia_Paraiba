@@ -59,6 +59,7 @@ export function BotaoFlutuanteWhatsApp({ distanciaDaBase = 88 }: { distanciaDaBa
       accessibilityRole="button"
       accessibilityLabel={`Falar com ${principal.nome} no WhatsApp para reservar`}
       onPress={() => abrirLink(urlWhatsApp(principal.telefone, casa.mensagemWhatsApp))}
+      dataSet={{ fab: 'true' }}
       style={({ pressed }) => [
         estilos.flutuante,
         { bottom: distanciaDaBase },

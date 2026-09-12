@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Conteudo } from '@/components/Base';
+import { CabecalhoDaPagina } from '@/components/CabecalhoDaPagina';
 import { CabecalhoDeTela } from '@/components/CabecalhoDeTela';
 import { CartaoSabor } from '@/components/CartaoSabor';
 import { Icone } from '@/components/Icone';
 import { Seletor } from '@/components/Seletor';
 import { categorias, sabores, type Categoria } from '@/data/gastronomia';
-import { colors, espaco, fonts, raio } from '@/theme';
+import { colors, espaco, ESPACO_FINAL_DA_PAGINA, fonts, raio } from '@/theme';
 
 type Filtro = Categoria | 'todos';
 
@@ -30,6 +31,11 @@ export default function TelaSabores() {
       contentContainerStyle={estilos.conteudo}
       showsVerticalScrollIndicator={false}
     >
+      <CabecalhoDaPagina
+        titulo="Onde comer bem no litoral · Guia do anfitrião"
+        descricao="Frutos do mar, comida regional, padaria e bar de praia: os restaurantes que a gente indica no Litoral Sul da Paraíba."
+        rota="/sabores"
+      />
       <CabecalhoDeTela
         sobrancelha="Gastronomia do litoral"
         titulo="Onde comer bem"
@@ -72,7 +78,7 @@ const estilos = StyleSheet.create({
     backgroundColor: colors.areia,
   },
   conteudo: {
-    paddingBottom: 130,
+    paddingBottom: ESPACO_FINAL_DA_PAGINA,
   },
   filtro: {
     marginTop: espaco.xl,

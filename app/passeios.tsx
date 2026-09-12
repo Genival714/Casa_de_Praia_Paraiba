@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Conteudo, TituloSecao } from '@/components/Base';
+import { CabecalhoDaPagina } from '@/components/CabecalhoDaPagina';
 import { CabecalhoDeTela } from '@/components/CabecalhoDeTela';
 import { CartaoPasseio } from '@/components/CartaoPasseio';
 import { Icone } from '@/components/Icone';
 import { Seletor } from '@/components/Seletor';
 import { experiencias, mirantes } from '@/data/passeios';
-import { colors, espaco, fonts, raio } from '@/theme';
+import { colors, espaco, ESPACO_FINAL_DA_PAGINA, fonts, raio } from '@/theme';
 
 type Aba = 'mirantes' | 'experiencias';
 
@@ -28,6 +29,11 @@ export default function TelaPasseios() {
       contentContainerStyle={estilos.conteudo}
       showsVerticalScrollIndicator={false}
     >
+      <CabecalhoDaPagina
+        titulo="Mirantes e passeios do Litoral Sul · Guia do anfitrião"
+        descricao="Os mirantes da falésia, o Castelinho da Princesa, as piscinas naturais e outras experiências do Litoral Sul paraibano, com rota pronta."
+        rota="/passeios"
+      />
       <CabecalhoDeTela
         sobrancelha="Vistas e passeios"
         titulo="De cima da falésia"
@@ -85,7 +91,7 @@ const estilos = StyleSheet.create({
     backgroundColor: colors.areia,
   },
   conteudo: {
-    paddingBottom: 130,
+    paddingBottom: ESPACO_FINAL_DA_PAGINA,
   },
   filtro: {
     marginTop: espaco.xl,

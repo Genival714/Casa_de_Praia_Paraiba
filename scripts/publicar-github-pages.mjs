@@ -44,6 +44,27 @@ function repositorioDoGit() {
   return achado ? achado[1] : null;
 }
 
+/**
+ * Nome de usuário do GitHub, para montar o endereço completo do site.
+ *
+ * Serve para a pré-visualização do link no WhatsApp: sem endereço absoluto
+ * não dá para apontar a imagem de compartilhamento nem a tag canônica.
+ */
+function donoDoGit() {
+  const git = spawnSync('git', ['remote', 'get-url', 'origin'], {
+    encoding: 'utf8',
+    shell: true,
+  });
+  if (git.status !== 0) return null;
+
+  const endereco = (git.stdout || '').trim();
+  const achado = endereco.match(/github\.com[/:]([^/:]+)\//);
+  // O endereço do GitHub Pages é sempre em minúsculas, mesmo que o nome de
+  // usuário tenha maiúsculas. Sem isso, a tag canônica aponta para um
+  // endereço diferente do real.
+  return achado ? achado[1].toLowerCase() : null;
+}
+
 const informado = process.argv[2];
 const doGit = informado ? null : repositorioDoGit();
 const repositorio = (informado ?? doGit ?? '').replace(/^\/+|\/+$/g, '');
@@ -108,7 +129,13 @@ const build = spawnSync(
   {
     stdio: 'inherit',
     shell: true,
-    env: { ...process.env, CAMINHO_BASE: base },
+    env: {
+      ...process.env,
+      CAMINHO_BASE: base,
+      // Endereço completo do site. Sem ele, o link compartilhado no WhatsApp
+      // vai sem imagem de pré-visualização.
+      EXPO_PUBLIC_ORIGEM: donoDoGit() ? `https://${donoDoGit()}.github.io${base}` : '',
+    },
   },
 );
 

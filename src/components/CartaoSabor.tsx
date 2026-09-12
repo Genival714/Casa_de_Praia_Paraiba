@@ -20,7 +20,7 @@ const iconesPorCategoria: Record<
 
 export function CartaoSabor({ sabor }: { sabor: Sabor }) {
   return (
-    <Cartao style={estilos.cartao}>
+    <Cartao interativo anim="surge" style={estilos.cartao}>
       <View style={estilos.cabecalho}>
         <View style={estilos.icone}>
           <Icone
@@ -66,7 +66,8 @@ export function CartaoSabor({ sabor }: { sabor: Sabor }) {
             abrirLink(
               urlWhatsApp(
                 sabor.telefone as string,
-                `Olá! Encontrei o ${sabor.nome} no guia da Casa de Praia da Praia do Amor e gostaria de informações.`,
+                sabor.mensagemWhatsApp ??
+                  `Olá! Encontrei o ${sabor.nome} no guia da Casa de Praia da Praia do Amor e gostaria de informações.`,
               ),
             )
           }
@@ -128,7 +129,7 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 5,
-    backgroundColor: '#FDF0DA',
+    backgroundColor: colors.solFundo,
     borderRadius: raio.pill,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -137,7 +138,7 @@ const estilos = StyleSheet.create({
     fontFamily: fonts.corpo,
     fontSize: 12,
     fontWeight: '700',
-    color: '#9A6410',
+    color: colors.solTexto,
   },
   especialidade: {
     fontFamily: fonts.corpo,

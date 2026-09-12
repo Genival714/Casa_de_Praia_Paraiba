@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Conteudo, TituloSecao } from '@/components/Base';
+import { CabecalhoDaPagina } from '@/components/CabecalhoDaPagina';
 import { CabecalhoDeTela } from '@/components/CabecalhoDeTela';
 import { CartaoPraia } from '@/components/CartaoPraia';
 import { Icone } from '@/components/Icone';
 import { Seletor } from '@/components/Seletor';
 import { gruposDePraias, type Litoral } from '@/data/praias';
-import { colors, espaco, fonts, raio } from '@/theme';
+import { colors, espaco, ESPACO_FINAL_DA_PAGINA, fonts, raio } from '@/theme';
 
 const OPCOES: { id: Litoral; rotulo: string }[] = [
   { id: 'sul', rotulo: 'Litoral Sul' },
@@ -33,6 +34,11 @@ export default function TelaPraias() {
       contentContainerStyle={estilos.conteudo}
       showsVerticalScrollIndicator={false}
     >
+      <CabecalhoDaPagina
+        titulo="As praias da Paraíba · Guia do anfitrião"
+        descricao="Ranking das praias do Litoral Sul e do Litoral Norte da Paraíba, com o tempo de carro a partir da casa e rota pronta para o Google Maps e o Waze."
+        rota="/praias"
+      />
       <CabecalhoDeTela
         sobrancelha="Guia do anfitrião"
         titulo="As praias da Paraíba"
@@ -82,7 +88,7 @@ const estilos = StyleSheet.create({
     backgroundColor: colors.areia,
   },
   conteudo: {
-    paddingBottom: 130,
+    paddingBottom: ESPACO_FINAL_DA_PAGINA,
   },
   filtro: {
     marginTop: espaco.xl,
@@ -94,7 +100,7 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: espaco.sm,
-    backgroundColor: '#FFF3EE',
+    backgroundColor: colors.avisoFundo,
     borderRadius: raio.sm,
     paddingHorizontal: espaco.md,
     paddingVertical: 10,
@@ -105,7 +111,7 @@ const estilos = StyleSheet.create({
     fontSize: 12.5,
     lineHeight: 18,
     fontWeight: '600',
-    color: '#7B3A22',
+    color: colors.avisoTexto,
   },
   grupo: {
     marginTop: espaco.xxl,

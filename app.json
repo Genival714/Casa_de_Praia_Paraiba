@@ -11,14 +11,14 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0E6F7E"
+      "backgroundColor": "#04303A"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0E6F7E",
+        "backgroundColor": "#04303A",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -32,8 +32,8 @@
       "name": "Casa de Praia · Praia do Amor · Jacumã/Conde-PB",
       "shortName": "Casa de Praia",
       "lang": "pt-BR",
-      "themeColor": "#0E6F7E",
-      "backgroundColor": "#FDF8F0",
+      "themeColor": "#04303A",
+      "backgroundColor": "#FFFCF6",
       "description": "Casa de temporada mobiliada na Praia do Amor, Jacuma - Conde/PB. Piscina, area de lazer e as melhores praias, mirantes e restaurantes do Litoral Sul paraibano."
     },
     "plugins": [

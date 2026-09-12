@@ -9,7 +9,7 @@ import { colors, espaco, fonts, raio } from '@/theme';
 
 export function CartaoPraia({ praia, destaque }: { praia: Praia; destaque?: boolean }) {
   return (
-    <Cartao style={[estilos.cartao, praia.ehACasa && estilos.cartaoDaCasa]}>
+    <Cartao interativo anim="surge" style={[estilos.cartao, praia.ehACasa && estilos.cartaoDaCasa]}>
       <View style={estilos.cabecalho}>
         <Medalha posicao={praia.posicao} destaque={destaque} />
 
@@ -57,8 +57,8 @@ const estilos = StyleSheet.create({
     gap: espaco.md,
   },
   cartaoDaCasa: {
-    borderColor: 'rgba(46, 125, 91, 0.35)',
-    backgroundColor: '#FBFDF9',
+    borderColor: colors.verdeBorda,
+    backgroundColor: colors.okFundo,
   },
   cabecalho: {
     flexDirection: 'row',
@@ -97,7 +97,7 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#E2F1EA',
+    backgroundColor: colors.okFundo,
     borderRadius: raio.sm,
     paddingHorizontal: espaco.md,
     paddingVertical: 8,
@@ -122,7 +122,7 @@ const estilos = StyleSheet.create({
   dica: {
     flexDirection: 'row',
     gap: espaco.sm,
-    backgroundColor: '#FDF6E9',
+    backgroundColor: colors.solFundo,
     borderRadius: raio.sm,
     padding: espaco.md,
   },
@@ -131,6 +131,6 @@ const estilos = StyleSheet.create({
     fontFamily: fonts.corpo,
     fontSize: 13,
     lineHeight: 19,
-    color: '#7A5514',
+    color: colors.solTexto,
   },
 });

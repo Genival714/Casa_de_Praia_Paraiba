@@ -12,7 +12,7 @@ export function CartaoPasseio({ passeio }: { passeio: Passeio }) {
   const ehMirante = passeio.tipo === 'mirante';
 
   return (
-    <Cartao style={estilos.cartao}>
+    <Cartao interativo anim="surge" style={estilos.cartao}>
       <View style={estilos.cabecalho}>
         <LinearGradient
           colors={ehMirante ? [colors.marClaro, colors.mar] : [colors.sol, colors.porDoSol]}
@@ -115,7 +115,7 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 5,
-    backgroundColor: '#FDE8E1',
+    backgroundColor: colors.avisoFundo,
     borderRadius: raio.pill,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -140,7 +140,7 @@ const estilos = StyleSheet.create({
   dica: {
     flexDirection: 'row',
     gap: espaco.sm,
-    backgroundColor: '#FDF6E9',
+    backgroundColor: colors.solFundo,
     borderRadius: raio.sm,
     padding: espaco.md,
   },
@@ -149,6 +149,6 @@ const estilos = StyleSheet.create({
     fontFamily: fonts.corpo,
     fontSize: 13,
     lineHeight: 19,
-    color: '#7A5514',
+    color: colors.solTexto,
   },
 });

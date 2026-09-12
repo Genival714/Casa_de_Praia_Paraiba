@@ -15,10 +15,11 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import QRCode from 'qrcode';
 
-const AZUL_MAR = '#0E6F7E';
-const AZUL_FUNDO = '#063A4F';
-const AREIA = '#FDF8F0';
-const CORAL = '#F0714B';
+// Espelha src/theme.ts à mão — este script é Node puro e não importa de lá.
+const AZUL_MAR = '#0A4B57';
+const AZUL_FUNDO = '#04303A';
+const AREIA = '#FFFCF6';
+const CORAL = '#C96A31';
 
 const url = process.argv[2];
 
@@ -84,9 +85,9 @@ const placa = `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="595" 
   <rect width="420" height="595" fill="${AREIA}"/>
   <path d="M0,0 H420 V150 C340,190 280,120 200,150 C120,180 60,150 0,168 Z" fill="url(#mar)"/>
 
-  <circle cx="360" cy="52" r="40" fill="#E9A23B" opacity="0.28"/>
+  <circle cx="360" cy="52" r="40" fill="#D9903A" opacity="0.28"/>
 
-  <text x="210" y="62" text-anchor="middle" fill="#7FD8DE"
+  <text x="210" y="62" text-anchor="middle" fill="#3BB3BC"
         font-family="Georgia, serif" font-size="11" letter-spacing="3.4">CASA DE TEMPORADA</text>
   <text x="210" y="100" text-anchor="middle" fill="#FFFFFF"
         font-family="Georgia, serif" font-size="27" font-weight="600">Praia do Amor</text>
@@ -103,7 +104,7 @@ const placa = `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="595" 
         font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="bold"
         letter-spacing="1.6">APONTE A CÂMERA DO CELULAR</text>
 
-  <text x="210" y="566" text-anchor="middle" fill="#4A6B75"
+  <text x="210" y="566" text-anchor="middle" fill="#4A6167"
         font-family="Helvetica, Arial, sans-serif" font-size="11">
     Praias · mirantes · restaurantes · como chegar
   </text>
