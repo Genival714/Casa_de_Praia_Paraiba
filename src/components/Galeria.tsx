@@ -1,16 +1,46 @@
-import { createElement, useCallback, useEffect, useState } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Botao } from '@/components/Base';
 import { Foto } from '@/components/Foto';
 import { Icone } from '@/components/Icone';
 import { propsDeRevelacao, useRevelacao } from '@/components/Revelar';
 import { arquivoPublico } from '@/lib/caminhos';
+import { abrirLink } from '@/lib/links';
+import { reconhecerVideo } from '@/lib/videos';
 import { colors, espaco, fonts, raio } from '@/theme';
 
 export type FotoDaGaleria = {
   arquivo: string;
   legenda: string;
 };
+
+/** O que o visor em tela cheia sabe mostrar: uma foto do site ou um vídeo de fora. */
+export type ItemDeMidia =
+  | { tipo: 'foto'; arquivo: string; legenda: string }
+  | { tipo: 'video'; url: string; legenda: string };
+
+/**
+ * Estado do visor: qual item está aberto e como andar entre eles.
+ * Quem tem uma lista de mídia (a galeria da casa, o cartão de cada praia)
+ * usa este hook e entrega o resultado ao <VisorDeMidia>.
+ */
+export function useVisor(total: number) {
+  const [indice, setIndice] = useState<number | null>(null);
+
+  const abrir = useCallback((i: number) => setIndice(i), []);
+  const fechar = useCallback(() => setIndice(null), []);
+  const proxima = useCallback(
+    () => setIndice((i) => (i === null ? null : (i + 1) % total)),
+    [total],
+  );
+  const anterior = useCallback(
+    () => setIndice((i) => (i === null ? null : (i - 1 + total) % total)),
+    [total],
+  );
+
+  return { indice, abrir, fechar, proxima, anterior };
+}
 
 /**
  * Galeria de fotos com ampliação em tela cheia.
@@ -31,17 +61,10 @@ export function Galeria({
   fotos: readonly FotoDaGaleria[];
   arranjo?: 'mosaico' | 'lista';
 }) {
-  const [aberta, setAberta] = useState<number | null>(null);
-
-  const abrir = useCallback((i: number) => setAberta(i), []);
-  const fechar = useCallback(() => setAberta(null), []);
-  const proxima = useCallback(
-    () => setAberta((i) => (i === null ? null : (i + 1) % fotos.length)),
-    [fotos.length],
-  );
-  const anterior = useCallback(
-    () => setAberta((i) => (i === null ? null : (i - 1 + fotos.length) % fotos.length)),
-    [fotos.length],
+  const { indice, abrir, fechar, proxima, anterior } = useVisor(fotos.length);
+  const itens = useMemo<ItemDeMidia[]>(
+    () => fotos.map((foto) => ({ tipo: 'foto', ...foto })),
+    [fotos],
   );
 
   return (
@@ -62,9 +85,9 @@ export function Galeria({
         </View>
       )}
 
-      <TelaCheia
-        fotos={fotos}
-        indice={aberta}
+      <VisorDeMidia
+        itens={itens}
+        indice={indice}
         aoFechar={fechar}
         aoAvancar={proxima}
         aoVoltar={anterior}
@@ -114,21 +137,29 @@ function Mosaico({
 
 /* ------------------------------------------------------------------------- */
 
-function TelaCheia({
-  fotos,
+/**
+ * Visor em tela cheia: foto ou vídeo, com setas, teclado e contagem.
+ *
+ * O vídeo roda AQUI DENTRO, no player da própria plataforma (YouTube,
+ * Instagram, TikTok, Vimeo), sem mandar o hóspede para fora do site. O
+ * player só é criado quando o visor abre — antes disso o site não carrega
+ * nada de terceiros.
+ */
+export function VisorDeMidia({
+  itens,
   indice,
   aoFechar,
   aoAvancar,
   aoVoltar,
 }: {
-  fotos: readonly FotoDaGaleria[];
+  itens: readonly ItemDeMidia[];
   indice: number | null;
   aoFechar: () => void;
   aoAvancar: () => void;
   aoVoltar: () => void;
 }) {
   const aberta = indice !== null;
-  const foto = indice === null ? null : fotos[indice];
+  const item = indice === null ? null : itens[indice];
 
   // Setas e Esc no teclado, só na web.
   useEffect(() => {
@@ -142,8 +173,7 @@ function TelaCheia({
     return () => window.removeEventListener('keydown', aoTeclar);
   }, [aberta, aoFechar, aoAvancar, aoVoltar]);
 
-  if (!foto || indice === null) return null;
-  const endereco = arquivoPublico(`/fotos/${foto.arquivo}`);
+  if (!item || indice === null) return null;
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={aoFechar}>
@@ -157,32 +187,18 @@ function TelaCheia({
         />
 
         <View style={estilos.palco} pointerEvents="box-none">
-          {Platform.OS === 'web' ? (
-            createElement('img', {
-              src: endereco,
-              alt: foto.legenda,
-              style: {
-                maxWidth: '100%',
-                maxHeight: '78vh',
-                objectFit: 'contain',
-                borderRadius: 14,
-                boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
-              },
-            })
-          ) : (
-            <Image source={{ uri: endereco }} style={estilos.imagemNativa} resizeMode="contain" />
-          )}
+          {item.tipo === 'foto' ? <FotoAmpliada item={item} /> : <VideoEmbutido item={item} />}
 
           <View style={estilos.legendaLinha}>
-            <Text style={estilos.legenda}>{foto.legenda}</Text>
+            <Text style={estilos.legenda}>{item.legenda}</Text>
             <Text style={estilos.contagem}>
-              {indice + 1} / {fotos.length}
+              {indice + 1} / {itens.length}
             </Text>
           </View>
         </View>
 
         <BotaoRedondo icone="close" rotulo="Fechar" onPress={aoFechar} style={estilos.fechar} />
-        {fotos.length > 1 ? (
+        {itens.length > 1 ? (
           <>
             <BotaoRedondo
               icone="chevron-left"
@@ -200,6 +216,73 @@ function TelaCheia({
         ) : null}
       </View>
     </Modal>
+  );
+}
+
+function FotoAmpliada({ item }: { item: Extract<ItemDeMidia, { tipo: 'foto' }> }) {
+  const endereco = arquivoPublico(`/fotos/${item.arquivo}`);
+
+  if (Platform.OS !== 'web') {
+    return <Image source={{ uri: endereco }} style={estilos.imagemNativa} resizeMode="contain" />;
+  }
+
+  return createElement('img', {
+    src: endereco,
+    alt: item.legenda,
+    style: {
+      maxWidth: '100%',
+      maxHeight: '78vh',
+      objectFit: 'contain',
+      borderRadius: 14,
+      boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
+    },
+  });
+}
+
+function VideoEmbutido({ item }: { item: Extract<ItemDeMidia, { tipo: 'video' }> }) {
+  const video = reconhecerVideo(item.url);
+  const abrirFora = () => abrirLink(item.url);
+
+  // No app nativo (ou link que não dá para embutir): só o botão de abrir fora.
+  if (!video || Platform.OS !== 'web') {
+    return (
+      <View style={estilos.videoReserva}>
+        <Icone name="play-circle-outline" size={44} color={colors.branco} />
+        <Botao
+          rotulo={video ? `Assistir no ${video.rotulo}` : 'Assistir ao vídeo'}
+          icone="open-in-new"
+          variante="primario"
+          onPress={abrirFora}
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View style={estilos.videoBloco}>
+      {createElement('iframe', {
+        key: video.player,
+        src: video.player,
+        title: item.legenda,
+        allow: 'autoplay; fullscreen; picture-in-picture; encrypted-media',
+        allowFullScreen: true,
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        style: {
+          // Em pé (Shorts, Reels, TikTok) ou deitado, sempre cabendo na altura da tela.
+          width: video.vertical ? 'min(100%, calc(72vh * 9 / 16))' : 'min(100%, calc(72vh * 16 / 9))',
+          aspectRatio: video.vertical ? '9 / 16' : '16 / 9',
+          border: 0,
+          borderRadius: 14,
+          background: '#000',
+          boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
+          display: 'block',
+        },
+      })}
+      <Pressable onPress={abrirFora} accessibilityRole="link" style={estilos.videoFora}>
+        <Icone name="open-in-new" size={13} color="rgba(255,255,255,0.6)" />
+        <Text style={estilos.videoForaTexto}>Abrir no {video.rotulo}</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -270,6 +353,33 @@ const estilos = StyleSheet.create({
   imagemNativa: {
     width: '100%',
     height: '78%',
+  },
+  videoBloco: {
+    width: '100%',
+    alignItems: 'center',
+    gap: espaco.sm,
+  },
+  videoFora: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 4,
+  },
+  videoForaTexto: {
+    fontFamily: fonts.corpo,
+    fontSize: 12.5,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.6)',
+  },
+  videoReserva: {
+    width: '100%',
+    maxWidth: 420,
+    aspectRatio: 16 / 9,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: espaco.lg,
   },
   legendaLinha: {
     flexDirection: 'row',

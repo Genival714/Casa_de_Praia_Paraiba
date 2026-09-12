@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Cartao, Etiqueta, Medalha, TempoDeCarro } from '@/components/Base';
 import { BotoesDeRota } from '@/components/BotoesDeRota';
-import { Foto } from '@/components/Foto';
+import { GaleriaDaPraia } from '@/components/GaleriaDaPraia';
 import { Icone } from '@/components/Icone';
 import type { Praia } from '@/data/praias';
 import { colors, espaco, fonts, raio } from '@/theme';
@@ -10,6 +10,8 @@ import { colors, espaco, fonts, raio } from '@/theme';
 export function CartaoPraia({ praia, destaque }: { praia: Praia; destaque?: boolean }) {
   return (
     <Cartao interativo anim="surge" style={[estilos.cartao, praia.ehACasa && estilos.cartaoDaCasa]}>
+      <GaleriaDaPraia praia={praia} />
+
       <View style={estilos.cabecalho}>
         <Medalha posicao={praia.posicao} destaque={destaque} />
 
@@ -29,8 +31,6 @@ export function CartaoPraia({ praia, destaque }: { praia: Praia; destaque?: bool
           <Text style={estilos.seloTexto}>Você está aqui — é a praia da casa</Text>
         </View>
       ) : null}
-
-      {praia.foto ? <Foto arquivo={praia.foto} altura={180} /> : null}
 
       <Text style={estilos.resumo}>{praia.resumo}</Text>
 
@@ -55,6 +55,8 @@ export function CartaoPraia({ praia, destaque }: { praia: Praia; destaque?: bool
 const estilos = StyleSheet.create({
   cartao: {
     gap: espaco.md,
+    // A capa da galeria sangra até a borda; o cartão corta o que passar do raio.
+    overflow: 'hidden',
   },
   cartaoDaCasa: {
     borderColor: colors.verdeBorda,

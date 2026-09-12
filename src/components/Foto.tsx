@@ -25,10 +25,13 @@ export function Foto({
   style,
   aoTocar,
   legendaSobreposta = true,
+  raioDaBorda = raio.md,
 }: {
   arquivo: string;
   legenda?: string;
   altura?: number;
+  /** Cantos: miniaturas pequenas pedem raio menor. */
+  raioDaBorda?: number;
   style?: StyleProp<ViewStyle>;
   /** Quando existe, a foto vira um botão (abre a galeria em tela cheia). */
   aoTocar?: () => void;
@@ -37,7 +40,8 @@ export function Foto({
 }) {
   const [falhou, setFalhou] = useState(false);
   const imagem = useRef<HTMLImageElement | null>(null);
-  const endereco = arquivoPublico(`/fotos/${arquivo}`);
+  // Um endereço completo (a miniatura de um vídeo do YouTube) passa direto.
+  const endereco = /^https?:\/\//.test(arquivo) ? arquivo : arquivoPublico(`/fotos/${arquivo}`);
   const descricao = legenda ?? 'Foto da casa de praia';
 
   /*
@@ -55,7 +59,7 @@ export function Foto({
   const conteudo = (
     <View
       dataSet={aoTocar ? { zoom: 'true' } : undefined}
-      style={[estilos.moldura, { height: altura }, !aoTocar && style]}
+      style={[estilos.moldura, { height: altura, borderRadius: raioDaBorda }, !aoTocar && style]}
     >
       {falhou ? (
         <View style={estilos.reserva}>

@@ -20,6 +20,7 @@ site e pode virar aplicativo de Android/iOS mais tarde, sem reescrever nada.
 | `npm run serve`    | Testa a pasta `dist/` antes de publicar                        |
 | `npm run qrcode`   | Gera o QR Code e a placa de parede (veja abaixo)               |
 | `npm run typecheck`| Confere se não há erro de código                               |
+| `python scripts/fotos-das-praias.py` | Prepara as fotos das praias (veja abaixo)    |
 | `npm start`        | Abre no celular pelo app Expo Go (para virar aplicativo)       |
 
 ---
@@ -185,7 +186,9 @@ de editar qualquer um deles, rode `npm run export` e publique de novo.
 | Manual do poço: passos, avisos, tabela           | `src/data/poco.ts`            |
 | Fotos da casa                                    | `public/fotos/` (veja o LEIA-ME de lá) |
 | Vídeos da casa                                   | `public/videos/` (veja o LEIA-ME de lá) |
-| Fotos das praias e passeios                      | `public/fotos/lugares/` (opcional)     |
+| Fotos das praias                                 | pasta `Imagens das Praias/` + o script (veja abaixo) |
+| Vídeos das praias (YouTube, Reels, TikTok)       | `src/data/praias.ts`, campo `videos`   |
+| Fotos dos passeios                               | `public/fotos/lugares/` (opcional)     |
 | Imagem que aparece ao mandar o link no WhatsApp  | `public/og/capa.jpg` (1200×630) |
 | Cores do site                                    | `src/theme.ts`                |
 
@@ -202,6 +205,52 @@ de editar qualquer um deles, rode `npm run export` e publique de novo.
 Em `src/data/praias.ts`, cada praia tem um campo `posicao`. O número é a
 posição dentro do próprio grupo (Top 1, Top 2 ou Litoral Norte). Troque os
 números e a lista se reorganiza.
+
+### Fotos das praias
+
+Cada praia pode ter quantas fotos quiser: a primeira vira a capa do cartão
+(e do chip na tela inicial), as outras aparecem numa tira de miniaturas, e
+qualquer uma abre em tela cheia com setas e teclado.
+
+Você não edita arquivo de código para isso:
+
+1. Jogue as fotos na pasta `Imagens das Praias/`, na raiz do projeto, com o
+   nome da praia no arquivo — `Praia Bela.jpg`, `Praia Bela (2).jpg`… A
+   numeração que o Windows já põe serve.
+2. Rode `python scripts/fotos-das-praias.py`. Ele reduz as fotos, faz as
+   miniaturas, corta tarja preta e grava a lista em
+   `src/data/fotosDasPraias.ts`.
+3. Rode `npm run github-pages` e publique.
+
+Praia nova, ou nome de arquivo diferente do esperado? Abra o script: a
+tabela `PRAIAS` liga o nome do arquivo ao `id` da praia, e `CAPAS` escolhe
+qual foto é a capa de cada uma.
+
+A pasta `Imagens das Praias/` fica fora do Git de propósito (são os originais);
+o que vai para o site são as versões reduzidas em `public/fotos/praias/`.
+
+### Vídeos das praias
+
+Em `src/data/praias.ts`, ache a praia e acrescente o campo `videos` com o
+link copiado do app — YouTube (e Shorts), Instagram (post e Reels), TikTok ou
+Vimeo:
+
+```ts
+{
+  id: 'tambaba',
+  ...
+  videos: [
+    { url: 'https://www.youtube.com/watch?v=XXXXXXXXXXX', titulo: 'Tambaba vista de cima' },
+    { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/' },
+  ],
+},
+```
+
+O vídeo aparece na tira do cartão com o botão de play e **roda dentro do
+site**, no player da própria plataforma, sem levar o hóspede para fora. O
+YouTube ainda mostra a imagem do vídeo na miniatura; as outras plataformas
+não oferecem isso, então a miniatura usa a capa da praia com o play por cima.
+Reels e TikTok abrem em pé, como no celular.
 
 ### Fixar o pino exato da casa no mapa
 
@@ -260,9 +309,10 @@ scripts/gerar-qrcode.mjs  o gerador da placa de parede
 - **Legendas dos banheiros** — pelas fotos não dá para saber qual é o da
   suíte e qual é o social. Estão com legendas genéricas; se souber, ajuste em
   `src/data/casa.ts`.
-- **Fotos das praias** — os cartões de praia funcionam sem foto. Se quiser
-  ilustrá-los, leia `public/fotos/lugares/LEIA-ME.md`: imagem achada no
-  Google costuma ter dono, e o texto explica de onde tirar foto publicável.
+- **Fotos das praias** — 12 praias do Litoral Sul já têm fotos; Tabatinga I,
+  Maceiozinho e todo o Litoral Norte ainda não (o cartão funciona sem). Sobre
+  de onde tirar foto publicável, leia `public/fotos/lugares/LEIA-ME.md`:
+  imagem achada no Google costuma ter dono.
 - **Peso dos vídeos** — são 29 MB no total, mas só baixam quando o visitante
   toca em tocar. `public/videos/LEIA-ME.md` explica como aliviar isso, se
   um dia precisar.

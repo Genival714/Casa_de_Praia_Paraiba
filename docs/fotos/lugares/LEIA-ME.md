@@ -1,28 +1,30 @@
-# Fotos das praias, mirantes e passeios
+# Fotos dos mirantes e passeios
 
 Esta pasta é opcional. Sem foto, o cartão de cada lugar já fica bonito — com
 o número do ranking, o texto e os botões de rota. Com foto, fica melhor ainda.
 
+> **Praias não passam por aqui.** As fotos das praias vão para a pasta
+> `Imagens das Praias/` na raiz do projeto e o script
+> `scripts/fotos-das-praias.py` cuida do resto — o README explica.
+
 ## Como acrescentar
 
 1. Salve a imagem aqui, com um nome simples e sem acento.
-   Exemplo: `coqueirinho.jpg`
+   Exemplo: `mirante-do-amor.jpg`
 
-2. Abra `src/data/praias.ts` (ou `src/data/passeios.ts`), ache o lugar e
-   acrescente a linha `foto`:
+2. Abra `src/data/passeios.ts`, ache o lugar e acrescente a linha `foto`:
 
    ```ts
    {
-     id: 'coqueirinho',
-     nome: 'Coqueirinho e Enseada de Coqueirinho',
+     id: 'mirante-do-amor',
      ...
-     foto: 'lugares/coqueirinho.jpg',
+     foto: 'lugares/mirante-do-amor.jpg',
    },
    ```
 
    Repare no `lugares/` na frente — é o caminho a partir de `public/fotos/`.
 
-3. Rode `npm run export` e publique de novo.
+3. Rode `npm run github-pages` e publique de novo.
 
 ## De onde tirar as fotos — atenção
 

@@ -1,6 +1,18 @@
+import { fotosDasPraias } from '@/data/fotosDasPraias';
 import type { Destino } from '@/lib/links';
 
 export type Litoral = 'sul' | 'norte';
+
+export type VideoDaPraia = {
+  /**
+   * Link do vídeo, do jeito que sai do botão "copiar link" do app.
+   * Entende YouTube (e Shorts), Instagram (post e Reels), TikTok e Vimeo —
+   * o vídeo roda dentro do site, sem mandar o hóspede para fora.
+   */
+  url: string;
+  /** Aparece no visor; sem ele, vale o nome da praia. */
+  titulo?: string;
+};
 export type Nivel = 'top1' | 'top2' | 'norte';
 
 export type Praia = Destino & {
@@ -17,20 +29,39 @@ export type Praia = Destino & {
   minutosDeCarro: number;
   dica?: string;
   /**
-   * Foto opcional. Salve o arquivo em `public/fotos/lugares/` e escreva aqui
-   * apenas o nome, assim: `foto: 'lugares/coqueirinho.jpg'`.
+   * Fotos da praia, a primeira é a capa. NÃO se escreve aqui: vem de
+   * `fotosDasPraias.ts`, que o script `scripts/fotos-das-praias.py` gera a
+   * partir da pasta `Imagens das Praias/`. Caminhos a partir de `public/fotos/`.
    */
-  foto?: string;
+  fotos?: readonly string[];
+  /** Vídeos da praia — estes sim se escrevem aqui, um link por vídeo. */
+  videos?: readonly VideoDaPraia[];
   /** Marca a praia onde a casa fica. */
   ehACasa?: boolean;
 };
+
+/** Liga a cada praia as fotos que o script gerou para o `id` dela. */
+function comFotos(lista: Praia[]): Praia[] {
+  return lista.map((praia) => {
+    const nomes = fotosDasPraias[praia.id];
+    return nomes ? { ...praia, fotos: nomes.map((nome) => `praias/${nome}`) } : praia;
+  });
+}
+
+/**
+ * A versão pequena de uma foto de praia (480 px), para cartões e chips.
+ * Fotos de fora de `praias/` não têm miniatura e voltam como estão.
+ */
+export function miniaturaDe(arquivo: string): string {
+  return arquivo.startsWith('praias/') ? arquivo.replace('praias/', 'praias/miniaturas/') : arquivo;
+}
 
 /* =========================================================================
  * LITORAL SUL — TOP I
  * Ranking pessoal do anfitrião.
  * ======================================================================= */
 
-const litoralSulTop1: Praia[] = [
+const litoralSulTop1: Praia[] = comFotos([
   {
     id: 'tabatinga-ii',
     nome: 'Tabatinga II',
@@ -112,6 +143,7 @@ const litoralSulTop1: Praia[] = [
       'Conhecida como a menor praia do Brasil: uma pequena enseada encaixada entre falésias, no trecho de Tambaba.',
     destaques: ['A menor praia do Brasil', 'Enseada entre falésias', 'Recanto reservado'],
     buscaMapa: 'Praia de Marcelia, Tambaba, Conde - PB',
+    videos: [{ url: 'https://www.youtube.com/shorts/AZ5zTFgskWI?feature=share' }],
   },
   {
     id: 'barra-abiai',
@@ -125,6 +157,7 @@ const litoralSulTop1: Praia[] = [
       'Onde o rio Abiaí desemboca no mar, formando bancos de areia e água rasa e morna na maré baixa.',
     destaques: ['Foz do rio Abiaí', 'Bancos de areia', 'Passeio de barco'],
     buscaMapa: 'Barra do Abiai, Pitimbu - PB',
+    videos: [{ url: 'https://youtu.be/aoT23IkYO6o?si=OoYiftyVzINjzxij' }],
   },
   {
     id: 'piscinas-pitimbu',
@@ -140,13 +173,13 @@ const litoralSulTop1: Praia[] = [
     dica: 'Só vale na maré baixa — confira a tábua de marés antes de sair.',
     buscaMapa: 'Piscinas Naturais de Pitimbu - PB',
   },
-];
+]);
 
 /* =========================================================================
  * LITORAL SUL — TOP II
  * ======================================================================= */
 
-const litoralSulTop2: Praia[] = [
+const litoralSulTop2: Praia[] = comFotos([
   {
     id: 'tabatinga-i',
     nome: 'Tabatinga I',
@@ -186,6 +219,7 @@ const litoralSulTop2: Praia[] = [
       'O centrinho do litoral: praia movimentada, com bares, comércio e a estrutura que resolve o dia a dia da temporada.',
     destaques: ['Comércio e bares', 'Estrutura completa', 'Ponto de encontro'],
     buscaMapa: 'Praia de Jacuma, Conde - PB',
+    videos: [{ url: 'https://youtube.com/shorts/4Uup5Snjl6I?si=1kJ59lzRMkwC0wga' }],
   },
   {
     id: 'carapibus',
@@ -226,8 +260,14 @@ const litoralSulTop2: Praia[] = [
     destaques: ['Foz do rio Gramame', 'Guaiamum Gigante', 'Bares de beira-rio'],
     dica: 'A apresentação do Guaiamum Gigante acontece sábados e domingos, a partir das 9h, no Bar do Mexicano.',
     buscaMapa: 'Barra de Gramame, Conde - PB',
+    videos: [
+      {
+        url: 'https://www.tiktok.com/@portal.jampa/video/7561142926361906444?is_from_webapp=1&sender_device=pc',
+        titulo: 'Barra de Gramame, por @portal.jampa',
+      },
+    ],
   },
-];
+]);
 
 /* =========================================================================
  * LITORAL NORTE — sugestões de bate-volta
@@ -235,7 +275,7 @@ const litoralSulTop2: Praia[] = [
  * Reordene o campo `posicao` para deixar no gosto do anfitrião.
  * ======================================================================= */
 
-const litoralNorte: Praia[] = [
+const litoralNorte: Praia[] = comFotos([
   {
     id: 'praia-do-jacare',
     nome: 'Praia do Jacaré',
@@ -397,7 +437,7 @@ const litoralNorte: Praia[] = [
     dica: 'Programe o dia inteiro: é a viagem mais longa entre os passeios sugeridos.',
     buscaMapa: 'Baia da Traicao - PB',
   },
-];
+]);
 
 export const praias: Praia[] = [...litoralSulTop1, ...litoralSulTop2, ...litoralNorte];
 

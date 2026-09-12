@@ -13,7 +13,7 @@ import { RodapeContato } from '@/components/RodapeContato';
 import { Sol } from '@/components/Sol';
 import { casa, comodidades, galeria } from '@/data/casa';
 import { sabores } from '@/data/gastronomia';
-import { praias, praiasEmDestaque } from '@/data/praias';
+import { miniaturaDe, praias, praiasEmDestaque } from '@/data/praias';
 import { regras } from '@/data/regras';
 import { arquivoPublico } from '@/lib/caminhos';
 import { contarQuandoVisivel } from '@/lib/revelar';
@@ -272,8 +272,16 @@ export default function TelaInicio() {
  * A foto de fundo da capa. Na web é uma <img> de verdade — já vem no HTML
  * que o servidor entrega e ganha o zoom lento pelo CSS.
  */
-function FotoDeFundo({ arquivo }: { arquivo: string }) {
+function FotoDeFundo({
+  arquivo,
+  posicao = '74% 58%',
+}: {
+  arquivo: string;
+  /** Que parte da foto fica visível quando o corte aperta (object-position). */
+  posicao?: string;
+}) {
   const endereco = arquivoPublico(`/fotos/${arquivo}`);
+  const ehACapa = arquivo === FOTO_DA_CAPA;
 
   if (Platform.OS !== 'web') {
     return null;
@@ -285,15 +293,17 @@ function FotoDeFundo({ arquivo }: { arquivo: string }) {
         src: endereco,
         alt: '',
         'aria-hidden': 'true',
-        'data-kenburns': 'true',
-        fetchPriority: 'high',
+        // Só a capa faz o zoom lento e carrega com prioridade; os chips esperam a vez.
+        'data-kenburns': ehACapa ? 'true' : undefined,
+        fetchPriority: ehACapa ? 'high' : undefined,
+        loading: ehACapa ? undefined : 'lazy',
         style: {
           position: 'absolute',
           inset: 0,
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          objectPosition: '74% 58%',
+          objectPosition: posicao,
           display: 'block',
         },
       })}
@@ -398,6 +408,7 @@ function ChipDePraia({
 }) {
   const router = useRouter();
   const referencia = useRevelacao(true);
+  const capa = praia.fotos?.[0] ? miniaturaDe(praia.fotos[0]) : null;
 
   return (
     <View ref={referencia} dataSet={propsDeRevelacao('surge', atraso)}>
@@ -408,17 +419,25 @@ function ChipDePraia({
         dataSet={{ cartao: 'true' }}
         style={({ pressed }) => [estilos.chipPraia, pressed && { opacity: 0.88 }]}
       >
-        <LinearGradient
-          colors={
-            praia.ehACasa
-              ? [colors.coqueiro, colors.verdeEscuro]
-              : [colors.marClaro, colors.marProfundo]
-          }
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 0.9, y: 1 }}
-          style={estilos.chipFundo}
-        >
-          <Sol tamanho={96} halo={false} fase={atraso} style={{ top: -30, right: -30 }} />
+        <View style={estilos.chipFundo}>
+          {/* A foto da praia por trás; o degradê garante o texto legível em qualquer foto. */}
+          {capa ? <FotoDeFundo arquivo={capa} posicao="50% 60%" /> : null}
+          <LinearGradient
+            colors={
+              capa
+                ? ['rgba(4, 48, 58, 0.05)', 'rgba(4, 48, 58, 0.35)', 'rgba(4, 48, 58, 0.92)']
+                : praia.ehACasa
+                  ? [colors.coqueiro, colors.verdeEscuro]
+                  : [colors.marClaro, colors.marProfundo]
+            }
+            locations={capa ? [0, 0.45, 1] : undefined}
+            start={{ x: 0.1, y: 0 }}
+            end={{ x: 0.9, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {capa ? null : (
+            <Sol tamanho={96} halo={false} fase={atraso} style={{ top: -30, right: -30 }} />
+          )}
           <Text style={estilos.chipMinutosGrande}>
             {praia.minutosDeCarro <= 0 ? '0' : praia.minutosDeCarro}
           </Text>
@@ -435,7 +454,7 @@ function ChipDePraia({
           <Text style={estilos.chipTempo}>
             {praia.minutosDeCarro <= 0 ? 'A praia da casa' : `${praia.minutosDeCarro} min de carro`}
           </Text>
-        </LinearGradient>
+        </View>
       </Pressable>
     </View>
   );
@@ -678,9 +697,10 @@ const estilos = StyleSheet.create({
   chipFundo: {
     padding: espaco.lg,
     gap: 4,
-    minHeight: 168,
+    minHeight: 188,
     justifyContent: 'flex-end',
     overflow: 'hidden',
+    backgroundColor: colors.marProfundo,
   },
   chipMinutosGrande: {
     position: 'absolute',

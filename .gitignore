@@ -47,6 +47,10 @@ dist/
 qrcode/
 dist-dev/
 
+# Originais das fotos das praias. O que vai para o site sao as versoes
+# reduzidas em public/fotos/praias/, geradas por scripts/fotos-das-praias.py.
+Imagens das Praias/
+
 # O site publicado (docs/) traz uma pasta chamada node_modules com imagens do
 # proprio Expo. A regra "node_modules/" la de cima casa com qualquer pasta
 # desse nome, em qualquer nivel — inclusive essa. Sem a excecao abaixo, esses
