@@ -16,6 +16,8 @@ const iconesPorCategoria: Record<
   carnes: 'food-steak',
   padaria: 'bread-slice-outline',
   bar: 'glass-cocktail',
+  lanche: 'hamburger',
+  tematico: 'drama-masks',
 };
 
 export function CartaoSabor({ sabor }: { sabor: Sabor }) {
@@ -54,6 +56,13 @@ export function CartaoSabor({ sabor }: { sabor: Sabor }) {
           <Etiqueta key={p} texto={p} tom="contorno" />
         ))}
       </View>
+
+      {sabor.dica ? (
+        <View style={estilos.dica}>
+          <Icone name="lightbulb-on-outline" size={15} color={colors.sol} />
+          <Text style={estilos.dicaTexto}>{sabor.dica}</Text>
+        </View>
+      ) : null}
 
       {sabor.telefone ? (
         <Botao
@@ -150,5 +159,19 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
+  },
+  dica: {
+    flexDirection: 'row',
+    gap: espaco.sm,
+    backgroundColor: colors.solFundo,
+    borderRadius: raio.sm,
+    padding: espaco.md,
+  },
+  dicaTexto: {
+    flex: 1,
+    fontFamily: fonts.corpo,
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.solTexto,
   },
 });

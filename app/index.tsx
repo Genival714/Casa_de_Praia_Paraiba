@@ -13,6 +13,7 @@ import { RodapeContato } from '@/components/RodapeContato';
 import { Sol } from '@/components/Sol';
 import { casa, comodidades, galeria } from '@/data/casa';
 import { sabores } from '@/data/gastronomia';
+import { passeios } from '@/data/passeios';
 import { miniaturaDe, praias, praiasEmDestaque } from '@/data/praias';
 import { regras } from '@/data/regras';
 import { arquivoPublico } from '@/lib/caminhos';
@@ -35,7 +36,7 @@ export default function TelaInicio() {
     >
       <CabecalhoDaPagina
         titulo="Casa de Praia na Praia do Amor · Jacumã — Conde/PB"
-        descricao="Casa de temporada toda mobiliada na Praia do Amor, Jacumã — Conde/PB. Piscina, área de lazer e um guia das melhores praias, mirantes e restaurantes do Litoral Sul paraibano."
+        descricao="Casa de temporada toda mobiliada na Praia do Amor, Jacumã — Conde/PB. Piscina, área de lazer e um guia das melhores praias, mirantes, passeios e restaurantes do Litoral Sul paraibano e de João Pessoa."
         rota="/"
       />
 
@@ -197,7 +198,7 @@ export default function TelaInicio() {
             <CartaoDeAtalho
               icone="binoculars"
               titulo="Passeios e mirantes"
-              texto="As vistas de cima da falésia que valem a subida"
+              texto={`${passeios.length} programas, dos mirantes do Conde ao pôr do sol no Jacaré`}
               atraso={2}
               onPress={() => router.push('/passeios')}
             />

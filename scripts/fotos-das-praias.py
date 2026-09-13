@@ -27,6 +27,11 @@ O que ele faz
 Para escolher a capa de uma praia (a primeira foto), acrescente o nome do
 arquivo em CAPAS aqui embaixo. Sem escolha, vale a ordem dos nomes.
 
+Foto que não é sua (Wikimedia Commons, banco de imagens) precisa de crédito:
+acrescente o arquivo em CREDITOS, com autor, licença e endereço da fonte. O
+site mostra "Foto: autor · licença" em cima da foto, com link para a fonte —
+é o que as licenças Creative Commons pedem.
+
 Precisa do Python 3 com a biblioteca Pillow (`pip install pillow`).
 """
 
@@ -71,6 +76,18 @@ PRAIAS = {
     "tabatinga": "tabatinga-ii",
     "tabatinga i": "tabatinga-i",
     "maceiozinho": "maceiozinho",
+    # Litoral Norte
+    "praia de jacarape": "jacarape",
+    "praia da penha": "praia-da-penha",
+    "ponta do seixas": "ponta-do-seixas",
+    "piscinas da penha": "piscinas-da-penha",
+    "areia vermelha": "areia-vermelha",
+    "praia formosa": "praia-formosa",
+    "camboinha": "camboinha",
+    "praia do sol": "praia-do-sol",
+    "ponta de campina": "ponta-de-campina",
+    "praia do poco": "praia-do-poco",
+    "dique de cabedelo": "dique-de-cabedelo",
 }
 
 # A capa de cada praia — a foto que aparece grande no cartão e no chip.
@@ -93,6 +110,33 @@ CAPAS = {
 EXCLUIR = {
     "Piscinas Naturais de Pitimbu (3).jpg",  # 300 × 300
     "Praia de Jacumã.jpg",  # 335 × 597
+}
+
+# Acima disso, um JPEG que já está no tamanho é recomprimido mesmo assim.
+LEVE_O_BASTANTE = 450_000
+
+# Fotos de terceiros: nome do arquivo em `Imagens das Praias/` → (autor,
+# licença, endereço da fonte). As fotos do Ministério do Turismo são de
+# domínio público com crédito obrigatório ao fotógrafo.
+CREDITOS = {
+    "Areia Vermelha.jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Areia_Vermelha,_Cabedelo_(PB).jpg"),
+    "Areia Vermelha (2).jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Areia_Vermelha_-_Cabedelo_(PB).jpg"),
+    "Areia Vermelha (3).jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Parque_Estadual_Marinho_de_Areia_Vermelha_-_Cabedelo_(PB).jpg"),
+    "Areia Vermelha (4).jpg": ("CleideIsabel2", "CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Parque_estadual_marinho_de_areia_vermelha_03.JPG"),
+    "Camboinha.jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:CacioMurilo_PraiaCamboinha_Cabedelo_PB_(26016554527).jpg"),
+    "Camboinha (2).jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:CacioMurilo_01_PraiaCamboinha_Cabedelo_PB_(41537823182).jpg"),
+    "Praia de Jacarapé.jpg": ("Matheus Jampa da Silva", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Praia_de_Jacarap%C3%AA_em_Jo%C3%A3o_Pessoa.jpg"),
+    "Praia de Jacarapé (2).jpg": ("Matheus Jampa da Silva", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Rio_Jacarap%C3%AA_na_Praia_de_Jacarap%C3%AA_em_Jo%C3%A3o_Pessoa,_Para%C3%ADba.jpg"),
+    "Piscinas da Penha.jpg": ("Matheus Jampa da Silva", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Praia_da_Penha,_em_Jo%C3%A3o_Pessoa,_na_Para%C3%ADba.jpg"),
+    "Piscinas da Penha (2).jpg": ("Matheus Jampa da Silva", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Vista_Panor%C3%A2mica_da_Praia_da_Penha,_em_Jo%C3%A3o_Pessoa,_na_Para%C3%ADba.jpg"),
+    "Ponta do Seixas.jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Fal%C3%A9sia_do_Cabo_Branco,_Jo%C3%A3o_Pessoa_(PB).jpg"),
+    "Ponta do Seixas (2).jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Piscinas_naturais_do_Seixas,_Jo%C3%A3o_Pessoa_(PB).jpg"),
+    "Ponta do Seixas (3).jpg": ("Marinelson Almeida", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Ponta_do_Seixas_._Parte_mais_Oriental_das_Americas._-_Brasil._Ponta_do_Seixas_in_Para%C3%ADba_is_the_portion_of_land_of_the_three_American_continents_that_advances_most_in_the_Atlantic_Ocean._(31147608160).jpg"),
+    "Ponta do Seixas (4).jpg": ("Marinelson Almeida", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Praia_da_Ponta_do_Seixas_e_Esta%C3%A7%C3%A3o_Cabo_Branco,_Jo%C3%A3o_Pessoa.jpg"),
+    "Praia da Penha.jpg": ("Miltextos", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Igreja_da_Penha_-_Escadaria.jpg"),
+    "Praia da Penha (2).jpg": ("A. Júnior", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Praia_da_Penha_-_Jo%C3%A3o_Pessoa,_Para%C3%ADba,_Brasil.jpg"),
+    "Praia da Penha (3).jpg": ("Abdias Jr", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Escadaria_da_Praia_da_Penha_-_Jo%C3%A3o_Pessoa,_Para%C3%ADba,_Brasil_(13761462164).jpg"),
+    "Praia Formosa.jpg": ("Cacio Murilo/MTur", "Domínio público", "https://commons.wikimedia.org/wiki/File:Praia_de_Intermares_-_Cabedelo_(PB).jpg"),
 }
 
 
@@ -140,6 +184,11 @@ def sem_tarjas(imagem: Image.Image) -> Image.Image:
     return imagem.crop((esquerda, topo, direita, base))
 
 
+def ts(texto: str) -> str:
+    """Texto entre aspas simples, do jeito que o TypeScript espera."""
+    return "'" + texto.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
 def reduzir(imagem: Image.Image, lado: int) -> Image.Image:
     copia = imagem.copy()
     copia.thumbnail((lado, lado), Image.LANCZOS)
@@ -178,6 +227,7 @@ def main() -> None:
     MINIATURAS.mkdir(parents=True)
 
     gerado: dict[str, list[str]] = {}
+    creditos: dict[str, tuple[str, str, str]] = {}
     total_kb = 0
     for praia, lista in sorted(por_praia.items()):
         nomes: list[str] = []
@@ -186,14 +236,17 @@ def main() -> None:
                 im = ImageOps.exif_transpose(im).convert("RGB")
                 cortada = sem_tarjas(im)
                 nome = f"{praia}-{indice:02d}.jpg"
-                if cortada is im and origem.suffix.lower() in {".jpg", ".jpeg"} and max(im.size) <= LADO_MAIOR:
-                    # Já está no tamanho: copia intacto, sem recomprimir JPEG em cima de JPEG.
+                ja_esta_leve = origem.stat().st_size <= LEVE_O_BASTANTE
+                if cortada is im and origem.suffix.lower() in {".jpg", ".jpeg"} and max(im.size) <= LADO_MAIOR and ja_esta_leve:
+                    # Já está no tamanho e leve: copia intacto, sem recomprimir JPEG em cima de JPEG.
                     shutil.copyfile(origem, DESTINO / nome)
                 else:
                     reduzir(cortada, LADO_MAIOR).save(DESTINO / nome, "JPEG", quality=QUALIDADE, optimize=True, progressive=True)
                 reduzir(cortada, LADO_MINIATURA).save(MINIATURAS / nome, "JPEG", quality=QUALIDADE_MINIATURA, optimize=True)
                 total_kb += (DESTINO / nome).stat().st_size // 1024
                 nomes.append(nome)
+                if origem.name in CREDITOS:
+                    creditos[nome] = CREDITOS[origem.name]
         gerado[praia] = nomes
         print(f"{praia:20s} {len(nomes):2d} fotos  (capa: {lista[0].name})")
 
@@ -205,6 +258,8 @@ def main() -> None:
         " * Os arquivos ficam em public/fotos/praias/ (e as miniaturas em",
         " * public/fotos/praias/miniaturas/, com o mesmo nome).",
         " */",
+        "import type { Credito } from '@/lib/creditos';",
+        "",
         "export const fotosDasPraias: Record<string, readonly string[]> = {",
     ]
     for praia, nomes in gerado.items():
@@ -212,6 +267,12 @@ def main() -> None:
         for nome in nomes:
             linhas.append(f"    '{nome}',")
         linhas.append("  ],")
+    linhas.append("};")
+    linhas.append("")
+    linhas.append("/** Crédito das fotos de terceiros (as suas não precisam), pelo nome do arquivo gerado. */")
+    linhas.append("export const creditosDasFotos: Record<string, Credito> = {")
+    for nome, (autor, licenca, url) in creditos.items():
+        linhas.append(f"  '{nome}': {{ autor: {ts(autor)}, licenca: {ts(licenca)}, url: {ts(url)} }},")
     linhas.append("};")
     linhas.append("")
     DADOS.write_text("\n".join(linhas), encoding="utf-8", newline="\n")

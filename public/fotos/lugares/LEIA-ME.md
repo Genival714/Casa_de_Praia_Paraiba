@@ -24,6 +24,23 @@ o número do ranking, o texto e os botões de rota. Com foto, fica melhor ainda.
 
    Repare no `lugares/` na frente — é o caminho a partir de `public/fotos/`.
 
+   Uma foto de praia que já está no site também serve, sem copiar nada:
+   `foto: 'praias/tambaba-02.jpg'` (os nomes estão em
+   `src/data/fotosDasPraias.ts`). É assim que os mirantes do Litoral Sul
+   estão hoje.
+
+   Se o corte da foto esconder a parte que interessa, ajuste com
+   `fotoPosicao: '50% 30%'` (o segundo número sobe a foto; o padrão mostra
+   mais a parte de baixo).
+
+   Foto de terceiros (Wikimedia Commons, banco de imagens) precisa de
+   crédito — o site mostra "Foto: autor · licença" no canto, com link:
+
+   ```ts
+   foto: 'lugares/farol-cabo-branco.jpg',
+   credito: { autor: 'Fulano', licenca: 'CC BY-SA 4.0', url: 'https://commons.wikimedia.org/wiki/File:...' },
+   ```
+
 3. Rode `npm run github-pages` e publique de novo.
 
 ## De onde tirar as fotos — atenção
@@ -36,6 +53,10 @@ anuncia um imóvel. As saídas seguras são:
   melhor hora de luz de cada praia. Foto real também passa mais confiança do
   que banco de imagem.
 - **Fotos de amigos ou de hóspedes**, com autorização de quem tirou.
+- **Wikimedia Commons** (<https://commons.wikimedia.org>), com fotos sob
+  licença Creative Commons — é de lá que vieram as fotos do Litoral Norte
+  que estão no site. Só use as marcadas CC0, CC BY, CC BY-SA ou domínio
+  público (nada de "NC" ou "ND"), e sempre com o campo `credito`.
 - **Bancos de imagem gratuitos**, que já liberam o uso comercial:
   - <https://unsplash.com>
   - <https://pexels.com>

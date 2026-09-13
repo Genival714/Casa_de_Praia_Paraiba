@@ -180,7 +180,7 @@ de editar qualquer um deles, rode `npm run export` e publique de novo.
 | ----------------------------------------------- | ----------------------------- |
 | Telefones, endereço, textos da capa, comodidades | `src/data/casa.ts`            |
 | Praias, ranking, tempos de carro                 | `src/data/praias.ts`          |
-| Mirantes e passeios                              | `src/data/passeios.ts`        |
+| Mirantes, passeios e bairros                     | `src/data/passeios.ts`        |
 | Restaurantes e bares                             | `src/data/gastronomia.ts`     |
 | Regras da casa, lotação, silêncio, leis          | `src/data/regras.ts`          |
 | Manual do poço: passos, avisos, tabela           | `src/data/poco.ts`            |
@@ -203,8 +203,14 @@ de editar qualquer um deles, rode `npm run export` e publique de novo.
 ### Mudar a ordem do ranking das praias
 
 Em `src/data/praias.ts`, cada praia tem um campo `posicao`. O número é a
-posição dentro do próprio grupo (Top 1, Top 2 ou Litoral Norte). Troque os
+posição dentro do próprio grupo (Top 1 e Top 2 de cada litoral). Troque os
 números e a lista se reorganiza.
+
+O campo `litoral` (`'sul'` ou `'norte'`) diz em qual aba a praia aparece —
+o mesmo vale para os passeios (`passeios.ts`) e os restaurantes
+(`gastronomia.ts`). A Barra de Gramame, na divisa, é a única que entra nas
+duas abas: está escrita uma vez só e reaparece no Litoral Norte com outra
+posição e outra dica.
 
 ### Fotos das praias
 
@@ -225,6 +231,12 @@ Você não edita arquivo de código para isso:
 Praia nova, ou nome de arquivo diferente do esperado? Abra o script: a
 tabela `PRAIAS` liga o nome do arquivo ao `id` da praia, e `CAPAS` escolhe
 qual foto é a capa de cada uma.
+
+Foto que não é sua (as praias do Litoral Norte vieram do Wikimedia Commons)
+entra na tabela `CREDITOS` do mesmo script, com autor, licença e endereço da
+fonte. O site mostra "Foto: autor · licença" no canto da foto, com link —
+é o que as licenças Creative Commons exigem. Fotos de passeios seguem a
+mesma regra, pelo campo `credito` em `src/data/passeios.ts`.
 
 A pasta `Imagens das Praias/` fica fora do Git de propósito (são os originais);
 o que vai para o site são as versões reduzidas em `public/fotos/praias/`.
@@ -303,14 +315,18 @@ scripts/gerar-qrcode.mjs  o gerador da placa de parede
 - **Tempos de carro** — estão como estimativa a partir da casa
   (`minutosDeCarro`, em cada arquivo de dados). Vale ajustar com base em
   quem conhece a estrada.
-- **Ranking do Litoral Norte** — a lista de praias do Litoral Norte e de
-  João Pessoa é uma sugestão de partida. Reordene as posições no gosto do
-  anfitrião, ou tire o que não valer a viagem.
+- **Litoral Norte** — praias, passeios, bairros e restaurantes de João
+  Pessoa e Cabedelo seguem o guia do anfitrião. Os tempos de carro do lado de
+  lá foram estimados a partir de "uns 40 minutos até João Pessoa"; vale
+  conferir. O Acquaí Park está no guia com aviso de que ainda não abriu —
+  ajuste o texto em `src/data/passeios.ts` quando inaugurar.
 - **Legendas dos banheiros** — pelas fotos não dá para saber qual é o da
   suíte e qual é o social. Estão com legendas genéricas; se souber, ajuste em
   `src/data/casa.ts`.
-- **Fotos das praias** — 12 praias do Litoral Sul já têm fotos; Tabatinga I,
-  Maceiozinho e todo o Litoral Norte ainda não (o cartão funciona sem). Sobre
+- **Fotos das praias** — 12 praias do Litoral Sul têm fotos suas; 7 do
+  Litoral Norte têm fotos do Wikimedia Commons, com crédito. Ainda sem foto:
+  Tabatinga I, Maceiozinho, Praia do Sol, Ponta de Campina, Praia do Poço e
+  o Dique de Cabedelo (o cartão funciona sem). Sobre
   de onde tirar foto publicável, leia `public/fotos/lugares/LEIA-ME.md`:
   imagem achada no Google costuma ter dono.
 - **Peso dos vídeos** — são 29 MB no total, mas só baixam quando o visitante

@@ -4,27 +4,34 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Cartao, Etiqueta, TempoDeCarro } from '@/components/Base';
 import { BotoesDeRota } from '@/components/BotoesDeRota';
 import { Foto } from '@/components/Foto';
-import { Icone } from '@/components/Icone';
-import type { Passeio } from '@/data/passeios';
+import { Icone, type NomeDeIcone } from '@/components/Icone';
+import type { Passeio, TipoPasseio } from '@/data/passeios';
 import { colors, espaco, fonts, raio } from '@/theme';
 
+/** Cada tipo de passeio tem o seu ícone, o degradê do ladrilho e a cor das etiquetas. */
+const visualPorTipo: Record<
+  TipoPasseio,
+  { icone: NomeDeIcone; cores: [string, string]; tom: 'agua' | 'sol' | 'coqueiro' | 'coral' }
+> = {
+  mirante: { icone: 'binoculars', cores: [colors.marClaro, colors.mar], tom: 'agua' },
+  experiencia: { icone: 'compass-outline', cores: [colors.sol, colors.porDoSol], tom: 'sol' },
+  passeio: { icone: 'map-marker-star-outline', cores: [colors.coqueiro, colors.verdeEscuro], tom: 'coqueiro' },
+  bairro: { icone: 'city-variant-outline', cores: [colors.coral, colors.falesia], tom: 'coral' },
+};
+
 export function CartaoPasseio({ passeio }: { passeio: Passeio }) {
-  const ehMirante = passeio.tipo === 'mirante';
+  const visual = visualPorTipo[passeio.tipo];
 
   return (
     <Cartao interativo anim="surge" style={estilos.cartao}>
       <View style={estilos.cabecalho}>
         <LinearGradient
-          colors={ehMirante ? [colors.marClaro, colors.mar] : [colors.sol, colors.porDoSol]}
+          colors={visual.cores}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={estilos.icone}
         >
-          <Icone
-            name={ehMirante ? 'binoculars' : 'compass-outline'}
-            size={18}
-            color={colors.branco}
-          />
+          <Icone name={visual.icone} size={18} color={colors.branco} />
         </LinearGradient>
 
         <View style={estilos.tituloBloco}>
@@ -44,13 +51,22 @@ export function CartaoPasseio({ passeio }: { passeio: Passeio }) {
         </View>
       ) : null}
 
-      {passeio.foto ? <Foto arquivo={passeio.foto} altura={180} /> : null}
+      {passeio.foto ? (
+        <Foto
+          arquivo={passeio.foto}
+          legenda={passeio.nome}
+          legendaSobreposta={false}
+          altura={180}
+          credito={passeio.credito}
+          posicao={passeio.fotoPosicao}
+        />
+      ) : null}
 
       <Text style={estilos.resumo}>{passeio.resumo}</Text>
 
       <View style={estilos.etiquetas}>
         {passeio.destaques.map((d) => (
-          <Etiqueta key={d} texto={d} tom={ehMirante ? 'agua' : 'sol'} />
+          <Etiqueta key={d} texto={d} tom={visual.tom} />
         ))}
       </View>
 

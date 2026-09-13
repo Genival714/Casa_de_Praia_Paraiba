@@ -4,7 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Foto } from '@/components/Foto';
 import { ItemDeMidia, useVisor, VisorDeMidia } from '@/components/Galeria';
 import { Icone } from '@/components/Icone';
-import { miniaturaDe, type Praia } from '@/data/praias';
+import { creditoDaFoto, miniaturaDe, type Praia } from '@/data/praias';
 import { reconhecerVideo } from '@/lib/videos';
 import { colors, espaco, fonts, raio } from '@/theme';
 
@@ -30,6 +30,7 @@ export function GaleriaDaPraia({ praia }: { praia: Praia }) {
         tipo: 'foto' as const,
         arquivo,
         legenda: fotos.length > 1 ? `${praia.nome} · foto ${i + 1}` : praia.nome,
+        credito: creditoDaFoto(arquivo),
       })),
       ...videos.map((video) => ({
         tipo: 'video' as const,
@@ -57,6 +58,7 @@ export function GaleriaDaPraia({ praia }: { praia: Praia }) {
           legendaSobreposta={false}
           raioDaBorda={0}
           aoTocar={() => visor.abrir(0)}
+          credito={creditoDaFoto(capa)}
         />
       ) : null}
 

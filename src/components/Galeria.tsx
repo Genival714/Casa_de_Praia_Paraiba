@@ -6,6 +6,7 @@ import { Foto } from '@/components/Foto';
 import { Icone } from '@/components/Icone';
 import { propsDeRevelacao, useRevelacao } from '@/components/Revelar';
 import { arquivoPublico } from '@/lib/caminhos';
+import { textoDoCredito, type Credito } from '@/lib/creditos';
 import { abrirLink } from '@/lib/links';
 import { reconhecerVideo } from '@/lib/videos';
 import { colors, espaco, fonts, raio } from '@/theme';
@@ -17,7 +18,7 @@ export type FotoDaGaleria = {
 
 /** O que o visor em tela cheia sabe mostrar: uma foto do site ou um vídeo de fora. */
 export type ItemDeMidia =
-  | { tipo: 'foto'; arquivo: string; legenda: string }
+  | { tipo: 'foto'; arquivo: string; legenda: string; credito?: Credito }
   | { tipo: 'video'; url: string; legenda: string };
 
 /**
@@ -195,6 +196,17 @@ export function VisorDeMidia({
               {indice + 1} / {itens.length}
             </Text>
           </View>
+
+          {item.tipo === 'foto' && item.credito ? (
+            <Pressable
+              onPress={() => abrirLink(item.credito!.url)}
+              accessibilityRole="link"
+              accessibilityLabel={`${textoDoCredito(item.credito)}. Abre a fonte da foto.`}
+              style={({ pressed }) => [estilos.creditoVisor, pressed && { opacity: 0.7 }]}
+            >
+              <Text style={estilos.creditoVisorTexto}>{textoDoCredito(item.credito)} · Wikimedia Commons</Text>
+            </Pressable>
+          ) : null}
         </View>
 
         <BotaoRedondo icone="close" rotulo="Fechar" onPress={aoFechar} style={estilos.fechar} />
@@ -395,6 +407,21 @@ const estilos = StyleSheet.create({
     fontWeight: '500',
     color: colors.branco,
     textAlign: 'center',
+  },
+  creditoVisor: {
+    alignSelf: 'center',
+    marginTop: espaco.sm,
+    paddingHorizontal: espaco.md,
+    paddingVertical: 4,
+    borderRadius: raio.pill,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+  },
+  creditoVisorTexto: {
+    fontFamily: fonts.corpo,
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.7)',
+    textDecorationLine: 'underline',
   },
   contagem: {
     fontFamily: fonts.corpo,

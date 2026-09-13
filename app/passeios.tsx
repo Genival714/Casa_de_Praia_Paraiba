@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Conteudo, TituloSecao } from '@/components/Base';
@@ -7,21 +7,24 @@ import { CabecalhoDeTela } from '@/components/CabecalhoDeTela';
 import { CartaoPasseio } from '@/components/CartaoPasseio';
 import { Icone } from '@/components/Icone';
 import { Seletor } from '@/components/Seletor';
-import { experiencias, mirantes } from '@/data/passeios';
+import { gruposDePasseios } from '@/data/passeios';
+import type { Litoral } from '@/data/praias';
 import { colors, espaco, ESPACO_FINAL_DA_PAGINA, fonts, raio } from '@/theme';
 
-type Aba = 'mirantes' | 'experiencias';
-
-const OPCOES: { id: Aba; rotulo: string }[] = [
-  { id: 'mirantes', rotulo: 'Mirantes' },
-  { id: 'experiencias', rotulo: 'Experiências' },
+const OPCOES: { id: Litoral; rotulo: string }[] = [
+  { id: 'sul', rotulo: 'Litoral Sul' },
+  { id: 'norte', rotulo: 'Litoral Norte' },
 ];
 
 export default function TelaPasseios() {
-  const [aba, setAba] = useState<Aba>('mirantes');
+  const [litoral, setLitoral] = useState<Litoral>('sul');
 
-  const ehMirantes = aba === 'mirantes';
-  const itens = ehMirantes ? mirantes : experiencias;
+  const grupos = useMemo(
+    () => gruposDePasseios.filter((grupo) => grupo.litoral === litoral),
+    [litoral],
+  );
+
+  const ehSul = litoral === 'sul';
 
   return (
     <ScrollView
@@ -30,51 +33,42 @@ export default function TelaPasseios() {
       showsVerticalScrollIndicator={false}
     >
       <CabecalhoDaPagina
-        titulo="Mirantes e passeios do Litoral Sul · Guia do anfitrião"
-        descricao="Os mirantes da falésia, o Castelinho da Princesa, as piscinas naturais e outras experiências do Litoral Sul paraibano, com rota pronta."
+        titulo="Mirantes, passeios e bairros · Guia do anfitrião"
+        descricao="Os mirantes da falésia e as experiências do Litoral Sul, mais os passeios e os bairros da orla de João Pessoa e Cabedelo, com rota pronta para o Google Maps e o Waze."
         rota="/passeios"
       />
       <CabecalhoDeTela
         sobrancelha="Vistas e passeios"
-        titulo="De cima da falésia"
-        apoio="Os mirantes do Litoral Sul e os passeios que valem entrar na agenda da temporada."
+        titulo="Além da areia"
+        apoio="No Litoral Sul, os mirantes da falésia e as experiências da temporada. No Norte, os passeios e bairros de João Pessoa e Cabedelo."
       />
 
       <Conteudo style={estilos.filtro}>
-        <Seletor opcoes={OPCOES} selecionado={aba} aoSelecionar={setAba} />
+        <Seletor opcoes={OPCOES} selecionado={litoral} aoSelecionar={setLitoral} />
       </Conteudo>
 
       <Conteudo style={estilos.aviso}>
         <View style={estilos.avisoCaixa}>
-          <Icone
-            name={ehMirantes ? 'weather-sunset' : 'waves'}
-            size={16}
-            color={colors.mar}
-          />
+          <Icone name={ehSul ? 'weather-sunset' : 'car-outline'} size={16} color={colors.mar} />
           <Text style={estilos.avisoTexto}>
-            {ehMirantes
-              ? 'As falésias são de barro e cedem com facilidade — aprecie a vista longe da borda.'
-              : 'Vários passeios dependem da maré. Confira a tábua de marés do dia antes de sair.'}
+            {ehSul
+              ? 'Falésia é para admirar: fique longe da borda e não pare embaixo dela. Piscinas e barras de rio dependem da maré — confira a tábua do dia.'
+              : 'De Jacumã a João Pessoa são 40 a 50 minutos pela PB-008 ou pela BR-101 — dá para ir e voltar no mesmo dia, dormindo sempre na mesma casa.'}
           </Text>
         </View>
       </Conteudo>
 
-      <Conteudo style={estilos.grupo}>
-        <TituloSecao
-          titulo={ehMirantes ? 'Mirantes' : 'Experiências'}
-          apoio={
-            ehMirantes
-              ? `${mirantes.length} vistas do alto, do Mirante do Amor — logo ali — até Tambaba.`
-              : `${experiencias.length} programas para preencher os dias entre um mergulho e outro.`
-          }
-        />
+      {grupos.map((grupo) => (
+        <Conteudo key={`${grupo.litoral}-${grupo.tipo}`} style={estilos.grupo}>
+          <TituloSecao titulo={grupo.titulo} apoio={grupo.descricao} />
 
-        <View style={estilos.lista}>
-          {itens.map((passeio) => (
-            <CartaoPasseio key={passeio.id} passeio={passeio} />
-          ))}
-        </View>
-      </Conteudo>
+          <View style={estilos.lista}>
+            {grupo.itens.map((passeio) => (
+              <CartaoPasseio key={passeio.id} passeio={passeio} />
+            ))}
+          </View>
+        </Conteudo>
+      ))}
 
       <Conteudo style={estilos.nota}>
         <Text style={estilos.notaTexto}>

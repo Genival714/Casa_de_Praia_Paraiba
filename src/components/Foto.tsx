@@ -3,6 +3,8 @@ import { Image, Platform, Pressable, StyleProp, StyleSheet, Text, View, ViewStyl
 
 import { Icone } from '@/components/Icone';
 import { arquivoPublico } from '@/lib/caminhos';
+import { abrirLink } from '@/lib/links';
+import { textoDoCredito, type Credito } from '@/lib/creditos';
 import { colors, espaco, fonts, raio } from '@/theme';
 
 /**
@@ -26,10 +28,19 @@ export function Foto({
   aoTocar,
   legendaSobreposta = true,
   raioDaBorda = raio.md,
+  credito,
+  posicao = '50% 62%',
 }: {
   arquivo: string;
   legenda?: string;
   altura?: number;
+  /** Foto de terceiros: mostra "Foto: autor · licença" no canto, com link para a fonte. */
+  credito?: Credito;
+  /**
+   * Que parte da foto fica visível quando o corte aperta (object-position).
+   * O padrão favorece a parte de baixo, porque as fotos da casa têm céu em cima.
+   */
+  posicao?: string;
   /** Cantos: miniaturas pequenas pedem raio menor. */
   raioDaBorda?: number;
   style?: StyleProp<ViewStyle>;
@@ -83,8 +94,7 @@ export function Foto({
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            // As fotos da casa têm céu em cima; o corte favorece a parte de baixo.
-            objectPosition: '50% 62%',
+            objectPosition: posicao,
             display: 'block',
           },
         })
@@ -105,6 +115,8 @@ export function Foto({
           </Text>
         </View>
       ) : null}
+
+      {credito && !falhou ? <EtiquetaDeCredito credito={credito} /> : null}
     </View>
   );
 
@@ -118,6 +130,27 @@ export function Foto({
       style={({ pressed }) => [style, pressed && { opacity: 0.92 }]}
     >
       {conteudo}
+    </Pressable>
+  );
+}
+
+/**
+ * O crédito no canto da foto. É um botão de verdade: abre a página da foto na
+ * fonte, onde estão o autor e a licença por extenso — as licenças Creative
+ * Commons pedem isso. Fica por cima de tudo, então recebe o toque antes da
+ * foto (que abre a galeria).
+ */
+function EtiquetaDeCredito({ credito }: { credito: Credito }) {
+  return (
+    <Pressable
+      onPress={() => abrirLink(credito.url)}
+      accessibilityRole="link"
+      accessibilityLabel={`${textoDoCredito(credito)}. Abre a fonte da foto.`}
+      style={({ pressed }) => [estilos.credito, pressed && { opacity: 0.7 }]}
+    >
+      <Text style={estilos.creditoTexto} numberOfLines={1}>
+        {textoDoCredito(credito)}
+      </Text>
     </Pressable>
   );
 }
@@ -165,5 +198,21 @@ const estilos = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: '600',
     color: colors.branco,
+  },
+  credito: {
+    position: 'absolute',
+    top: espaco.sm,
+    right: espaco.sm,
+    maxWidth: '80%',
+    backgroundColor: 'rgba(4, 48, 58, 0.55)',
+    borderRadius: raio.pill,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  creditoTexto: {
+    fontFamily: fonts.corpo,
+    fontSize: 10.5,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.92)',
   },
 });

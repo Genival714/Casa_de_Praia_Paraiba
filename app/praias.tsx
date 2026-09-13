@@ -42,7 +42,7 @@ export default function TelaPraias() {
       <CabecalhoDeTela
         sobrancelha="Guia do anfitrião"
         titulo="As praias da Paraíba"
-        apoio="Separadas por litoral e ranqueadas do jeito que a gente gosta. Cada praia abre direto no Google Maps ou no Waze."
+        apoio="Separadas por litoral e ranqueadas do jeito que a gente gosta: o Conde e Pitimbu ao sul, João Pessoa e Cabedelo ao norte. Cada praia abre direto no Google Maps ou no Waze."
       />
 
       <Conteudo style={estilos.filtro}>
@@ -55,13 +55,13 @@ export default function TelaPraias() {
           <Text style={estilos.avisoTexto}>
             {litoral === 'sul'
               ? `Ranking pessoal do anfitrião — ${totalDePraias} praias, todas a partir da casa.`
-              : `Sugestões de bate-volta subindo o litoral — ${totalDePraias} paradas a partir de João Pessoa.`}
+              : `Bate-volta de um dia: João Pessoa fica a uns 40 min pela PB-008 — ${totalDePraias} praias e piscinas naturais.`}
           </Text>
         </View>
       </Conteudo>
 
       {grupos.map((grupo) => (
-        <Conteudo key={grupo.nivel} style={estilos.grupo}>
+        <Conteudo key={`${grupo.litoral}-${grupo.nivel}`} style={estilos.grupo}>
           <TituloSecao titulo={grupo.titulo} apoio={grupo.descricao} />
 
           <View style={estilos.lista}>
