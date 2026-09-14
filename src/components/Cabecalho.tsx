@@ -1,7 +1,8 @@
 import { Link, usePathname } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FaixaInfinita } from '@/components/FaixaInfinita';
 import { colors, espaco, fonts, LARGURA_MAX, raio } from '@/theme';
 
 /**
@@ -51,45 +52,56 @@ export function Cabecalho() {
 
         {/*
           A navegação sempre vive numa faixa rolável. No computador ela não
-          transborda e parece uma linha comum; no celular, rola de lado com a
-          última pílula cortada, que é a dica visual de que há mais.
+          transborda e parece uma linha comum. No celular ela não cabe — e em
+          vez de deixar a última pílula cortada como única pista, a faixa
+          anda sozinha, sem fim, mostrando todas as abas (ver FaixaInfinita).
           Assim não precisamos de nenhum ponto de quebra.
         */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={estilos.menu}
+        <FaixaInfinita
           style={estilos.menuExterno}
+          contentContainerStyle={estilos.menu}
+          espacamento={espaco.sm}
+          corDoFundo={colors.marProfundo}
+          separador={<View style={estilos.divisor} />}
         >
-          {MENU.map((item, i) => {
-            const ativo = caminho === item.href;
-            const primeiroDeHospede = item.deHospede && !MENU[i - 1]?.deHospede;
+          {({ clone }) =>
+            MENU.map((item, i) => {
+              const ativo = caminho === item.href;
+              const primeiroDeHospede = item.deHospede && !MENU[i - 1]?.deHospede;
 
-            return (
-              <View key={item.href} style={estilos.grupoItem}>
-                {primeiroDeHospede ? <View style={estilos.divisor} /> : null}
-                <Link href={item.href} asChild>
-                  <Pressable
-                    accessibilityRole="link"
-                    accessibilityState={{ selected: ativo }}
-                    accessibilityLabel={item.rotulo}
-                    dataSet={{ pilula: 'true' }}
-                    style={({ pressed }) => [
-                      estilos.pilula,
-                      item.deHospede && estilos.pilulaContorno,
-                      ativo && estilos.pilulaAtiva,
-                      pressed && { opacity: 0.75 },
-                    ]}
-                  >
-                    <Text style={[estilos.rotulo, ativo && estilos.rotuloAtivo]}>
-                      {item.rotulo}
-                    </Text>
-                  </Pressable>
-                </Link>
-              </View>
-            );
-          })}
-        </ScrollView>
+              return (
+                <View key={item.href} style={estilos.grupoItem}>
+                  {primeiroDeHospede ? <View style={estilos.divisor} /> : null}
+                  <Link href={item.href} asChild>
+                    <Pressable
+                      accessibilityRole="link"
+                      accessibilityState={{ selected: ativo }}
+                      accessibilityLabel={item.rotulo}
+                      // As cópias de apoio da faixa ficam fora da ordem do teclado.
+                      // (tabIndex, não `focusable`: o Pressable da web ignora o segundo.)
+                      tabIndex={clone ? -1 : undefined}
+                      dataSet={{ pilula: 'true' }}
+                      // Precisa ser um objeto simples, não função nem lista: o
+                      // `asChild` do Link mescla o estilo com {...deLa, ...daqui},
+                      // e espalhar uma função dá {} — a pílula perdia padding,
+                      // borda e o fundo laranja da aba ativa. O escurecer ao
+                      // tocar fica no CSS de app/+html.tsx ([data-pilula]:active).
+                      style={StyleSheet.flatten([
+                        estilos.pilula,
+                        item.deHospede && estilos.pilulaContorno,
+                        ativo && estilos.pilulaAtiva,
+                      ])}
+                    >
+                      <Text style={[estilos.rotulo, ativo && estilos.rotuloAtivo]}>
+                        {item.rotulo}
+                      </Text>
+                    </Pressable>
+                  </Link>
+                </View>
+              );
+            })
+          }
+        </FaixaInfinita>
       </View>
     </View>
   );

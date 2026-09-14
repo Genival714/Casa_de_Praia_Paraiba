@@ -395,6 +395,10 @@ html[data-js="1"] [data-entrada="5"] { animation-delay: 700ms; }
 @media (hover: hover) {
   [data-pilula="true"]:hover::after { transform: scaleX(1); }
 }
+/* Escurece enquanto o dedo está em cima. Fica aqui, e não no "pressed" do
+   Pressable, porque o estilo da pílula precisa ser um objeto fixo (veja
+   src/components/Cabecalho.tsx). */
+[data-pilula="true"]:active { opacity: 0.75; }
 
 /* Contador: números alinhados enquanto sobem. */
 [data-contador] { font-variant-numeric: tabular-nums; }
